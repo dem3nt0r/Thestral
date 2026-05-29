@@ -1,0 +1,112 @@
+# Visual Studio
+.vs/
+*.VC.db
+*.VC.VC.opendb
+
+# Build results
+Debug/
+Release/
+x64/
+x86/
+ARM/
+ARM64/
+
+# CMake
+out/
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Visual Studio generated files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# IntelliSense
+ipch/
+*.ipch
+
+# Browse database
+*.opendb
+*.sdf
+*.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Object files
+*.obj
+*.o
+*.iobj
+*.pch
+*.pdb
+*.ilk
+*.idb
+*.tlog
+*.lastbuildstate
+
+# Static and dynamic libraries
+*.lib
+*.exp
+
+# Executables
+*.exe
+*.dll
+
+# Profiling
+*.pgc
+*.pgd
+
+# Test results
+TestResults/
+
+# NuGet
+packages/
+*.nupkg
+
+# ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# Visual Assist
+*.VA.db
+
+# Windows crash dumps
+*.dmp
+
+# Coverage reports
+*.coverage
+*.coveragexml
+
+# Publish folders
+Publish/
+AppPackages/
+
+# Generated documentation
+docs/_site/
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# JetBrains Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# clang
+.clangd/
+.cache/
+
+# Local environment files
+.env
+.env.*
