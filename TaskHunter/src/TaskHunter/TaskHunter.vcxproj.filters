@@ -24,12 +24,18 @@
     <ClCompile Include="ConsoleHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RegUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SignatureVerifier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RegUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

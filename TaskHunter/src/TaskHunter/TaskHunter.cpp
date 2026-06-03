@@ -7,6 +7,7 @@
 
 #include "SignatureVerifier.h"
 #include "ConsoleHelper.h"
+#include "RegUtils.h"
 
 #include <wintrust.h>
 #include <softpub.h>
@@ -14,52 +15,6 @@
 #pragma comment(lib, "taskschd.lib")
 #pragma comment(lib, "comsuppw.lib")
 #pragma comment(lib, "advapi32.lib")
-
-BOOL ReadRegistryString(HKEY root, const std::wstring& subkey, const std::wstring& valueName, std::wstring& out)
-{
-    HKEY hKey = NULL;
-    LSTATUS status = 0;
-
-    DWORD type = 0;
-    DWORD size = 0;
-
-    status = RegOpenKeyExW(root, subkey.c_str(), 0, KEY_READ, &hKey);
-    if (status != ERROR_SUCCESS) {
-        return FALSE;
-    }
-
-    status = RegQueryValueExW(
-        hKey,
-        valueName.empty() ? NULL : valueName.c_str(),
-        NULL,
-        &type,
-        NULL,
-        &size);
-    if (status != ERROR_SUCCESS || type != REG_SZ) {
-        RegCloseKey(hKey);
-        return FALSE;
-    }
-
-    std::vector<wchar_t> buffer(size / sizeof(wchar_t));
-
-    status = RegQueryValueExW(
-        hKey,
-        valueName.empty() ? NULL : valueName.c_str(),
-        NULL,
-        NULL,
-        reinterpret_cast<LPBYTE>(buffer.data()),
-        &size);
-
-    RegCloseKey(hKey);
-
-    if (status != ERROR_SUCCESS) {
-        return FALSE;
-    }
-
-    out = buffer.data();
-
-    return TRUE;
-}
 
 void AnalyzeCOMClass(const std::wstring& clsid)
 {
@@ -69,11 +24,28 @@ void AnalyzeCOMClass(const std::wstring& clsid)
     SignResult signResult{};
     SignatureVerifier verifier;
 
-    wprintf(L"    CLSID: %ls\n", clsid.c_str());
+    FILETIME ftClsid = {}, ftInproc = {};
+
+
+    if (QueryRegistryLastWriteTime(HKEY_CLASSES_ROOT, clsidKey, ftClsid)) {
+        std::wstring modified = FileTimeToString(ftClsid);
+        ConsoleHelper::Info(L"    CLSID: %ls (Last Modified - %ls)\n", clsid.c_str(), modified.c_str());
+    }
+    else {
+        ConsoleHelper::Warning(L"    CLSID: %ls (Last Modified - Unknow)\n", clsid.c_str());
+    }
 
     ReadRegistryString(HKEY_CLASSES_ROOT, clsidKey + L"\\InprocServer32", L"", dllPath);
     if (!dllPath.empty()) {
-        wprintf(L"    DLL: %ls\n", dllPath.c_str());
+
+        if (QueryRegistryLastWriteTime(HKEY_CLASSES_ROOT, clsidKey + L"\\InprocServer32", ftInproc)) {
+            std::wstring modified = FileTimeToString(ftInproc);
+            ConsoleHelper::Info(L"    DLL: %ls (Last Modified - %ls)\n", dllPath.c_str(), modified.c_str());
+        }
+        else
+        {
+            ConsoleHelper::Warning(L"    DLL: %ls (Last Modified - Unknow)\n", dllPath.c_str());
+        }
 
         if (verifier.VerifySignature(dllPath.c_str(), signResult)) {
             ConsoleHelper::Success(L"    Signature: VALID\n");
@@ -114,9 +86,9 @@ void AnalyzeCOMClass(const std::wstring& clsid)
     wprintf(L"\n");
 }
 
-void ProcessTask(IRegisteredTask* task)
-{
-    HRESULT hr;
+void ProcessTask(IRegisteredTask* task) {
+
+    HRESULT hr = S_FALSE;
 
     LONG count = 0;
 
@@ -136,45 +108,40 @@ void ProcessTask(IRegisteredTask* task)
 
     hr = task->get_Definition(&taskDef);
     if (FAILED(hr)) {
-        wprintf(L"Failed to get definition\n");
+        wprintf(L"Failed to get_Definition - 0x%08x\n", hr);
         goto cleanup;
     }
 
     hr = taskDef->get_Actions(&actions);
-
-    if (FAILED(hr))
-    {
-        wprintf(L"Failed to get actions\n");
-
+    if (FAILED(hr)) {
+        wprintf(L"Failed to get_Actions - 0x%08x\n", hr);
         taskDef->Release();
         goto cleanup;
     }
 
     actions->get_Count(&count);
 
-    for (LONG i = 1; i <= count; i++)
-    {
+    for (LONG i = 1; i <= count; i++) {
+
         IAction* action = NULL;
 
         hr = actions->get_Item(_variant_t(i), &action);
-
-        if (FAILED(hr))
+        if (FAILED(hr)) {
             continue;
+        }
 
         TASK_ACTION_TYPE type;
         action->get_Type(&type);
-
         switch (type)
         {
         case TASK_ACTION_EXEC:
         {
-            ConsoleHelper::Info(L"[EXEC ACTION]\n");
+            ConsoleHelper::Print(L"[EXEC ACTION]\n");
 
             IExecAction* iExecAction = NULL;
 
             hr = action->QueryInterface(IID_IExecAction, (void**)&iExecAction);
-            if (SUCCEEDED(hr))
-            {
+            if (SUCCEEDED(hr)) {
                 BSTR path = NULL;
                 iExecAction->get_Path(&path);
                 wprintf(L"    Executable: %ls\n", (path ? path : L""));
@@ -187,7 +154,7 @@ void ProcessTask(IRegisteredTask* task)
 
         case TASK_ACTION_COM_HANDLER:
         {
-            wprintf(L"[COM HANDLER ACTION]\n");
+            ConsoleHelper::Print(L"[COM HANDLER ACTION]\n");
 
             IComHandlerAction* iComHandlerAction = NULL;
 
@@ -207,9 +174,7 @@ void ProcessTask(IRegisteredTask* task)
 
         default:
         {
-            wprintf(
-                L"[OTHER ACTION TYPE] %d\n",
-                type);
+            ConsoleHelper::Print(L"[OTHER ACTION TYPE] %d\n", type);
             break;
         }
         }
@@ -233,17 +198,12 @@ void EnumerateFolder(ITaskFolder* folder)
     IRegisteredTaskCollection* iRegisteredTaskCollection = NULL;
     ITaskFolderCollection* iTaskFolderCollection = NULL;
 
-    hr = folder->GetTasks(
-        TASK_ENUM_HIDDEN,
-        &iRegisteredTaskCollection);
-
-    if (SUCCEEDED(hr))
-    {
+    hr = folder->GetTasks(TASK_ENUM_HIDDEN, &iRegisteredTaskCollection);
+    if (SUCCEEDED(hr)) {
         LONG count = 0;
         iRegisteredTaskCollection->get_Count(&count);
 
-        for (LONG i = 1; i <= count; i++)
-        {
+        for (LONG i = 1; i <= count; i++) {
             IRegisteredTask* iRegisteredTask = NULL;
             hr = iRegisteredTaskCollection->get_Item(_variant_t(i), &iRegisteredTask);
             if (SUCCEEDED(hr)) {
@@ -255,19 +215,15 @@ void EnumerateFolder(ITaskFolder* folder)
         iRegisteredTaskCollection->Release();
     }
 
-    // Enumerate subfolders
     hr = folder->GetFolders(0, &iTaskFolderCollection);
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         LONG count = 0;
         iTaskFolderCollection->get_Count(&count);
 
-        for (LONG i = 1; i <= count; i++)
-        {
+        for (LONG i = 1; i <= count; i++) {
             ITaskFolder* subFolder = NULL;
             hr = iTaskFolderCollection->get_Item(_variant_t(i), &subFolder);
-            if (SUCCEEDED(hr))
-            {
+            if (SUCCEEDED(hr)) {
                 EnumerateFolder(subFolder);
                 subFolder->Release();
             }
