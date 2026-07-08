@@ -44,24 +44,6 @@ The Thestral toolkit currently provides hunting capabilities for:
 
 ---
 
-```text
-Thestral/
-│
-├── Source/
-│   ├── TaskHunter/
-│   ├── SvcHostHunter/
-│   └── ...
-│
-├── docs/
-│   ├── TaskHunter.md
-│   └── SvcHostHunter.md
-│
-├── README.md
-└── .gitignore
-```
-
----
-
 # Planned Modules
 
 The toolkit is designed to grow over time. Planned modules include:
