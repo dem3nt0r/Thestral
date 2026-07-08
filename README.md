@@ -1,48 +1,124 @@
 # Thestral
 
-Thestral is a threat hunting focused project that groups a set of specialized Windows security tools designed to help detect, investigate, and analyze common persistence and execution techniques used by adversaries.
+**Thestral** is a modular Windows threat hunting toolkit focused on helping defenders identify, investigate, and analyze common persistence mechanisms, execution chains, and system components that may be abused by attackers.
 
-The project is structured as a modular toolkit, where each component focuses on a specific attack surface such as Scheduled Tasks, COM objects, registry persistence, or execution chains. This design allows each tool to be used independently during incident response or combined for broader investigations.
+Rather than relying solely on Indicators of Compromise (IOCs), Thestral emphasizes inspecting Windows internals, validating trust relationships, and identifying suspicious configurations that can reveal attacker activity or persistence.
 
----
-
-## Modules
-
-| Project | Description | Documentation |
-|----------|-----------------------------|-----------------------------|
-| TaskHunter | Enumerates Windows Scheduled Tasks and analyzes COM Handler actions. It extracts COM CLSIDs, resolves backing DLLs, and verifies Authenticode signatures to detect suspicious or unsigned persistence mechanisms. | [TaskHunter Documentation](./TaskHunter/TaskHunter.md) |
+Each module is designed to operate independently, allowing security professionals to use only the tools relevant to their investigation while maintaining a consistent workflow across the toolkit.
 
 ---
 
-## Focus Areas
+# Modules
 
-Thestral focuses on threat hunting across Windows environments, including:
-
-- Persistence mechanisms
-- COM-based execution paths
-- Scheduled Task abuse
-- Signed vs unsigned binary analysis
-- Hidden or less visible execution chains
+| Project           | Description                                                                                                                                                                                            | Documentation                                        |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| **TaskHunter**    | Enumerates Windows Scheduled Tasks and analyzes COM Handler actions. Resolves COM CLSIDs, identifies backing DLLs, and validates Authenticode signatures to detect suspicious persistence mechanisms.  | [TaskHunter Documentation](docs/TaskHunter.md)       |
+| **SvcHostHunter** | Enumerates services hosted by **svchost.exe**, resolves **ServiceDll** modules, verifies Authenticode signatures, extracts signer information, and highlights suspicious or non-standard service DLLs. | [SvcHostHunter Documentation](docs/SvcHostHunter.md) |
 
 ---
 
-## Design Goals
+# Current Capabilities
 
-- Security research and threat hunting first
-- Modular architecture with independent tools
-- Lightweight and fast execution
-- Clear visibility into Windows persistence mechanisms
-- Support for DFIR workflows
+The Thestral toolkit currently provides hunting capabilities for:
 
----
-
-## Usage
-
-Each tool inside Thestral is a standalone module. Refer to the individual module documentation for details on usage, output, and analysis scope.
+* Windows Scheduled Tasks
+* COM Handler persistence
+* Service DLL auditing
+* Authenticode signature validation
+* Catalog signature verification
+* Microsoft vs. third-party signer identification
+* Windows persistence analysis
 
 ---
 
-## Disclaimer
+# Design Goals
 
-Thestral is intended strictly for defensive security, threat hunting, and incident response activities. It should only be used in systems and environments where proper authorization has been granted.
+* Threat hunting first
+* Modular architecture with independent tools
+* Lightweight native C++ implementation
+* Minimal dependencies
+* Fast execution suitable for enterprise environments
+* Clear visibility into Windows persistence mechanisms
+* Support for DFIR and incident response workflows
+* Easy integration into automation and scripting pipelines
+
+---
+
+```text
+Thestral/
+│
+├── Source/
+│   ├── TaskHunter/
+│   ├── SvcHostHunter/
+│   └── ...
+│
+├── docs/
+│   ├── TaskHunter.md
+│   └── SvcHostHunter.md
+│
+├── README.md
+└── .gitignore
 ```
+
+---
+
+# Planned Modules
+
+The toolkit is designed to grow over time. Planned modules include:
+
+* RegistryHunter
+* ServiceHunter
+* DriverHunter
+* COMHunter
+* WMIHunter
+* StartupHunter
+* IFEOHunter
+* LSAHunter
+* AppInitHunter
+* WinlogonHunter
+
+---
+
+# Intended Audience
+
+Thestral is intended for:
+
+* Threat Hunters
+* Blue Team Analysts
+* Incident Responders (IR)
+* Digital Forensics (DFIR) Practitioners
+* Detection Engineers
+* Windows Security Researchers
+* Enterprise Security Teams
+
+---
+
+# Contributing
+
+Contributions are welcome.
+
+If you would like to improve Thestral, you can:
+
+* Report bugs
+* Submit pull requests
+* Suggest new hunting modules
+* Improve existing detection logic
+* Enhance performance or documentation
+
+Please follow the existing coding style and include a clear description of any proposed changes.
+
+---
+
+# License
+
+MIT License.
+
+See the `LICENSE` file for details.
+
+---
+
+# Disclaimer
+
+Thestral is intended solely for defensive security, threat hunting, digital forensics, and incident response on systems for which you have explicit authorization.
+
+The project is provided for research and educational purposes. Users are responsible for ensuring compliance with all applicable laws, regulations, and organizational policies.
