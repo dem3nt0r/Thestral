@@ -78,7 +78,7 @@ Run the executable from a process that is already executing as **SYSTEM**. If th
 
 A clean scan shows accounts where the registry RID matches the embedded RID value. No suspicious RID mapping changes are detected.
 
-![RIDHunter Clean Output](../Images/RIDHunter/Clean.png)
+![RIDHunter Clean Output](Images/RIDHunter/Clean.png)
 
 ---
 
@@ -86,7 +86,7 @@ A clean scan shows accounts where the registry RID matches the embedded RID valu
 
 When a RID mismatch is detected, RIDHunter reports the affected account, the expected RID, the embedded RID value, and the account status for further investigation.
 
-![RIDHunter Alert Output](../Images/RIDHunter/Alert.png)
+![RIDHunter Alert Output](Images/RIDHunter/Alert.png)
 
 
 ---
