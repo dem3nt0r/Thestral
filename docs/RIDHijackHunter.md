@@ -72,28 +72,22 @@ This tool requires **NT AUTHORITY\SYSTEM** privileges to access the SAM registry
 Run the executable from a process that is already executing as **SYSTEM**. If the tool is not running in a SYSTEM context, it may be unable to open `HKLM\SAM` and will exit with an access error.
 
 
-# Example Output
+## Example Output
 
-```
-=== RID Hijacking Hunter ===
+### Clean Scan
 
-[OK] Administrator               RID 0x1F4 (500)
+A clean scan shows accounts where the registry RID matches the embedded RID value. No suspicious RID mapping changes are detected.
 
-[OK] Guest                       RID 0x1F5 (501)
+![RIDHunter Clean Output](../Images/RIDHunter/Clean.png)
 
-[ALERT] Possible RID Hijacking detected!
+---
 
-Account (registry key):
-    Bob
+### RID Hijacking Detection Alert
 
-Key RID:
-    0x3E9 (1001)
+When a RID mismatch is detected, RIDHunter reports the affected account, the expected RID, the embedded RID value, and the account status for further investigation.
 
-Embedded RID:
-    0x1F4 (500)
+![RIDHunter Alert Output](../Images/RIDHunter/Alert.png)
 
-=> Embedded RID does not match registry RID.
-```
 
 ---
 
