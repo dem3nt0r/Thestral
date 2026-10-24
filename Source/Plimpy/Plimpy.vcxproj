@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{DFA2135D-908F-46D5-B713-E165608A7B53}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Plimpy</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <OutDir>$(MSBuildThisFileDirectory)..\..\build\Plimpy\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(MSBuildThisFileDirectory)..\..\build\obj\Plimpy\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>Plimpy</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>UNICODE;_UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</BufferSecurityCheck>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</RuntimeTypeInfo>
+      <BufferSecurityCheck Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</BufferSecurityCheck>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</RuntimeTypeInfo>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>Psapi.lib;Dbghelp.lib;Wintrust.lib;Crypt32.lib;Advapi32.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableUAC>true</EnableUAC>
+      <UACExecutionLevel>AsInvoker</UACExecutionLevel>
+      <AssemblyDebug Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</AssemblyDebug>
+      <AssemblyDebug Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</AssemblyDebug>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>App.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="ConsoleHelper.cpp" />
+    <ClCompile Include="ComScanner.cpp" />
+    <ClCompile Include="DllUnloader.cpp" />
+    <ClCompile Include="FileMetadata.cpp" />
+    <ClCompile Include="InjectionScanner.cpp" />
+    <ClCompile Include="Plimpy.cpp" />
+    <ClCompile Include="PeImage.cpp" />
+    <ClCompile Include="WorkerPool.cpp" />
+    <ClCompile Include="ThreadStack.cpp" />
+    <ClCompile Include="ProcessHelper.cpp" />
+    <ClCompile Include="SignatureVerifier.cpp" />
+    <ClCompile Include="UnsignedScanner.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConsoleHelper.h" />
+    <ClInclude Include="ComScanner.h" />
+    <ClInclude Include="DllUnloader.h" />
+    <ClInclude Include="FileMetadata.h" />
+    <ClInclude Include="Handle.h" />
+    <ClInclude Include="InjectionScanner.h" />
+    <ClInclude Include="PeImage.h" />
+    <ClInclude Include="WorkerPool.h" />
+    <ClInclude Include="ThreadStack.h" />
+    <ClInclude Include="ProcessHelper.h" />
+    <ClInclude Include="SignatureVerifier.h" />
+    <ClInclude Include="UnsignedScanner.h" />
+    <ClInclude Include="WindowsPlatform.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.manifest" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

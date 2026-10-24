@@ -15,6 +15,7 @@ Each module is designed to operate independently, allowing security professional
 | **TaskHunter**    | Enumerates Windows Scheduled Tasks and analyzes COM Handler actions. Resolves COM CLSIDs, identifies backing DLLs, and validates Authenticode signatures to detect suspicious persistence mechanisms.  | [TaskHunter Documentation](docs/TaskHunter.md)       |
 | **SvcHostHunter** | Enumerates services hosted by **svchost.exe**, resolves **ServiceDll** modules, verifies Authenticode signatures, extracts signer information, and highlights suspicious or non-standard service DLLs. | [SvcHostHunter Documentation](docs/SvcHostHunter.md) |
 | **RIDHunter**     | Analyzes local account information from the Windows SAM database to detect potential RID Hijacking by comparing account RID mappings and embedded RID data. Reports suspicious RID mismatches for DFIR and threat hunting investigations. | [RIDHunter Documentation](docs/RIDHijackHunter.md)
+| **Plimpy** | Inspects processes for possible code injection and image modification, audits per-user COM registrations, and reports executable images with unverified trust. | [Plimpy Documentation](docs/Plimpy.md) |
 
 ---
 
@@ -29,6 +30,9 @@ The Thestral toolkit currently provides hunting capabilities for:
 * Catalog signature verification
 * Microsoft vs. third-party signer identification
 * Windows persistence analysis
+* Process injection and image modification checks
+* Per-user COM registration auditing
+* Executable image hashes and file metadata
 
 ---
 
